@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
   --font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", sans-serif;
   --font-mono: var(--font-sans);
@@ -58,37 +56,6 @@
   --radius: 0.5rem;
 }
 
-.dark {
-  /* Linear Minimalist Dark Canvas + Sensio Teal Accent */
-  --background: #09090b;
-  --foreground: #fafafa;
-  --card: #111113;
-  --card-foreground: #fafafa;
-  --popover: #18181b;
-  --popover-foreground: #fafafa;
-  --primary: #14b8a6;
-  --primary-hover: #0d9488;
-  --primary-foreground: #042f2e;
-  --secondary: #18181b;
-  --secondary-foreground: #e4e4e7;
-  --muted: #18181b;
-  --muted-foreground: #a1a1aa;
-  --accent: #18181b;
-  --accent-foreground: #5eead4;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --success: #22c55e;
-  --success-soft: rgba(34, 197, 94, 0.12);
-  --success-border: rgba(34, 197, 94, 0.28);
-  --warning: #f59e0b;
-  --warning-soft: rgba(245, 158, 11, 0.12);
-  --warning-border: rgba(245, 158, 11, 0.28);
-  --info: #38bdf8;
-  --border: #27272a;
-  --input: #27272a;
-  --ring: rgba(20, 184, 166, 0.32);
-}
-
 @theme inline {
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
@@ -141,6 +108,7 @@
   }
 
   html {
+    color-scheme: light;
     font-family: var(--font-sans);
     font-size: 100%;
     font-variant-numeric: tabular-nums;

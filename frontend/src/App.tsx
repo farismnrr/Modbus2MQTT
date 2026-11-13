@@ -5,7 +5,7 @@ const Agentation = lazy(() =>
   import('agentation').then((mod) => ({ default: mod.Agentation })),
 );
 import { AppShell, type NavTab } from '@/components/shared';
-import { useBridgeState, useTheme } from '@/hooks';
+import { useBridgeState } from '@/hooks';
 import {
   DeviceDetailPage,
   DevicesPage,
@@ -24,7 +24,6 @@ const TAB_LABEL: Record<NavTab, string> = {
 export function App() {
   const [tab, setTab] = useState<NavTab>('home');
   const [selectedIeee, setSelectedIeee] = useState<string | null>(null);
-  const { theme, toggleTheme } = useTheme();
   const { snapshot, wsConnected, logs, reloadSnapshot, restartBridge, clearLogs } = useBridgeState();
 
   const selectedDevice = snapshot?.devices.find((d) => d.ieee_address === selectedIeee);
@@ -43,8 +42,6 @@ export function App() {
       wsConnected={wsConnected}
       mqttConnected={snapshot?.mqtt_connected ?? false}
       baseTopic={snapshot?.config.mqtt.base_topic ?? 'modbus2mqtt'}
-      theme={theme}
-      onToggleTheme={toggleTheme}
       onRestartBridge={restartBridge}
     >
       {!snapshot ? (

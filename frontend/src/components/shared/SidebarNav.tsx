@@ -1,17 +1,14 @@
 import {
   Cpu,
   Home,
-  Moon,
   PanelLeftClose,
   PanelLeftOpen,
   RotateCw,
   ScrollText,
   Settings,
-  Sun,
   X,
 } from 'lucide-react';
 import { Button } from '@/components/ui';
-import type { ThemeMode } from '@/hooks';
 import { cn } from '@/lib';
 
 export type NavTab = 'home' | 'devices' | 'settings' | 'logs';
@@ -39,11 +36,9 @@ interface SidebarNavProps {
   wsConnected: boolean;
   mqttConnected: boolean;
   baseTopic: string;
-  theme: ThemeMode;
   onSelectTab: (tab: NavTab) => void;
   onToggleCollapse?: () => void;
   onCloseMobile?: () => void;
-  onToggleTheme: () => void;
   onRestartBridge: () => void;
 }
 
@@ -56,11 +51,9 @@ export function SidebarNav({
   wsConnected,
   mqttConnected,
   baseTopic,
-  theme,
   onSelectTab,
   onToggleCollapse,
   onCloseMobile,
-  onToggleTheme,
   onRestartBridge,
 }: SidebarNavProps) {
   const healthy = mqttConnected && wsConnected;
@@ -173,27 +166,16 @@ export function SidebarNav({
           </div>
         )}
 
-        <div className={cn('flex items-center gap-1', compact ? 'flex-col' : 'justify-between')}>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onRestartBridge}
-            title="Restart Bridge"
-            className={cn(compact ? 'w-8 px-0' : 'flex-1 justify-start text-xs')}
-          >
-            <RotateCw className="w-3.5 h-3.5" />
-            {!compact && <span>Restart</span>}
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={onToggleTheme}
-            title="Toggle Theme"
-            aria-label="Toggle Theme"
-          >
-            {theme === 'light' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
-          </Button>
-        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onRestartBridge}
+          title="Restart Bridge"
+          className={cn(compact ? 'w-full px-0' : 'w-full justify-center text-xs')}
+        >
+          <RotateCw className="w-3.5 h-3.5" />
+          {!compact && <span>Restart Bridge</span>}
+        </Button>
       </div>
     </div>
   );

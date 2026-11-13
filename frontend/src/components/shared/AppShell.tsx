@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { Menu } from 'lucide-react';
 import { Badge, Button } from '@/components/ui';
-import type { ThemeMode } from '@/hooks';
 import { cn } from '@/lib';
 import { NAV_ITEMS, SidebarNav, type NavTab } from './SidebarNav';
 
@@ -14,8 +13,6 @@ interface AppShellProps {
   wsConnected: boolean;
   mqttConnected: boolean;
   baseTopic: string;
-  theme: ThemeMode;
-  onToggleTheme: () => void;
   onRestartBridge: () => void;
   children: ReactNode;
 }
@@ -29,8 +26,6 @@ export function AppShell({
   wsConnected,
   mqttConnected,
   baseTopic,
-  theme,
-  onToggleTheme,
   onRestartBridge,
   children,
 }: AppShellProps) {
@@ -59,10 +54,8 @@ export function AppShell({
           wsConnected={wsConnected}
           mqttConnected={mqttConnected}
           baseTopic={baseTopic}
-          theme={theme}
           onSelectTab={handleSelect}
           onToggleCollapse={() => setCollapsed((prev) => !prev)}
-          onToggleTheme={onToggleTheme}
           onRestartBridge={onRestartBridge}
         />
       </aside>
@@ -85,10 +78,8 @@ export function AppShell({
               wsConnected={wsConnected}
               mqttConnected={mqttConnected}
               baseTopic={baseTopic}
-              theme={theme}
               onSelectTab={handleSelect}
               onCloseMobile={() => setMobileOpen(false)}
-              onToggleTheme={onToggleTheme}
               onRestartBridge={onRestartBridge}
             />
           </aside>

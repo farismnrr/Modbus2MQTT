@@ -8,14 +8,13 @@
    - `frontend/src/components/shared/` — reusable domain components (`AppShell`, `PageHeader`, `FormField`, `StatusBadge`, `NoticeBanner`, `EmptyState`, `SlaveConnectionFields`, `ModbusTargetFields`, `InlineValueControl`, `PointEditorModal`, `RpcEditorModal`).
 3. Any business logic, formatting, parsing, or state orchestration used by more than one screen **must** live in:
    - `frontend/src/lib/` — pure formatters, parsers, validators, and default factories (`cn`, `modbus.ts`).
-   - `frontend/src/hooks/` — reusable React state/lifecycle hooks (`useBridgeState`, `useAsyncAction`, `useTheme`).
+   - `frontend/src/hooks/` — reusable React state/lifecycle hooks (`useBridgeState`, `useAsyncAction`).
 
 ## Rule #2 — Design System Parity (Sensio Tokens + Linear Minimalist Craft)
 
 1. Preserve Sensio's brand, typography, & surface tokens in `frontend/src/index.css`:
    - Font stack: Self-hosted `@fontsource-variable/plus-jakarta-sans` (`Plus Jakarta Sans Variable`) with `font-variant-numeric: tabular-nums` matching Sensio (`_reset.scss`), plus Sensio's Utopia fluid type scale (`--text-2xs` .. `--text-display`, `--leading-*`, `--tracking-tight`).
-   - Brand accent: Sensio Teal (`#0d9488` light / `#14b8a6` dark), restrained strictly to primary actions, active nav/tabs, and focus rings.
-   - Surface hierarchy: Near-neutral canvas (`#f8f9fa` / `#09090b`) and card surfaces (`#ffffff` / `#111113`) separated by crisp `1px` hairline borders (`--border`) rather than heavy shadows.
+   - Brand accent: Sensio Teal (`#0d9488`), restrained strictly to primary actions, active nav/tabs, and focus rings (light-only surfaces `#f8f9fa` / `#ffffff`, separated by crisp `1px` hairline borders `--border`).
    - Compact Linear density: default control height `h-8` (`32px`), compact `h-7` (`28px`), crisp negative tracking on headings (`-0.02em`), high-signal muted secondary copy (`text-muted-foreground`).
 2. Do **not** reintroduce DaisyUI or ad-hoc color hex literals inside feature pages; consume semantic Tailwind tokens (`bg-background`, `bg-card`, `border-border`, `text-foreground`, `text-muted-foreground`, `text-primary`).
 
