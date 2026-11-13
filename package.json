@@ -12,7 +12,8 @@
     "build": "pnpm run build:backend && pnpm run build:frontend",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit -p tsconfig.json && pnpm --filter modbus2mqtt-frontend typecheck",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/*.test.ts",
+    "check:guardrails": "node scripts/check-ui-guardrails.mjs"
   },
   "keywords": [
     "modbus",

@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Save } from 'lucide-react';
-import { saveBridgeSettings } from '../api/client';
-import { BridgeConfig } from '../types';
+import { saveBridgeSettings } from '@/api/client';
+import { FormField, NoticeBanner, PageHeader } from '@/components/shared';
+import { Button, Card, CardContent, CardHeader, CardTitle, Input, Select, Switch } from '@/components/ui';
+import { useAsyncAction } from '@/hooks';
+import type { BridgeConfig } from '@/types';
 
 interface SettingsPageProps {
   config: BridgeConfig;
@@ -18,14 +21,11 @@ export function SettingsPage({ config, onSaved }: SettingsPageProps) {
   const [logLevel, setLogLevel] = useState(config.advanced.log_level);
   const [lastSeen, setLastSeen] = useState(config.advanced.last_seen);
   const [authToken, setAuthToken] = useState(localStorage.getItem('m2m_token') || '');
-  const [saving, setSaving] = useState(false);
-  const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
+  const { pending, notice, run, clearNotice } = useAsyncAction();
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
-    setNotice(null);
-    try {
+    void run(async () => {
       await saveBridgeSettings({
         mqtt: {
           server: mqttServer.trim(),
@@ -42,150 +42,115 @@ export function SettingsPage({ config, onSaved }: SettingsPageProps) {
           last_seen: lastSeen,
         },
       });
-      if (authToken.trim()) {
-        localStorage.setItem('m2m_token', authToken.trim());
-      } else {
-        localStorage.removeItem('m2m_token');
-      }
+      if (authToken.trim()) localStorage.setItem('m2m_token', authToken.trim());
+      else localStorage.removeItem('m2m_token');
       onSaved();
-      setNotice({ ok: true, text: 'Bridge settings saved. MQTT connection refreshed if changed.' });
-    } catch (err) {
-      setNotice({ ok: false, text: err instanceof Error ? err.message : String(err) });
-    } finally {
-      setSaving(false);
-    }
+    }, 'Bridge settings saved. MQTT connection refreshed if changed.');
   };
 
   return (
     <form onSubmit={handleSave} className="space-y-4 max-w-3xl">
-      <div className="bg-base-100 p-4 rounded-xl border border-base-300 shadow-xs">
-        <h1 className="text-lg font-bold">Bridge Settings (Zigbee2MQTT Compatible)</h1>
-        <p className="text-xs text-base-content/70">
-          Settings here can also be managed automatically from <strong>Sensio IoT &gt; Settings &gt; Plugins</strong> via WebSocket <code className="font-mono">/api</code>.
-        </p>
-      </div>
+      <PageHeader
+        title="Bridge Settings"
+        description={
+          <>
+            Zigbee2MQTT-compatible configuration, also managed automatically from{' '}
+            <span className="font-medium text-foreground">Sensio &gt; Settings &gt; Plugins</span>.
+          </>
+        }
+        actions={
+          <Button type="submit" disabled={pending}>
+            <Save className="w-3.5 h-3.5" />
+            {pending ? 'Saving...' : 'Save Settings'}
+          </Button>
+        }
+      />
 
-      {notice && (
-        <div className={`alert text-xs ${notice.ok ? 'alert-success' : 'alert-error'}`}>
-          <span>{notice.text}</span>
-        </div>
-      )}
+      <NoticeBanner notice={notice} onDismiss={clearNotice} />
 
-      <div className="bg-base-100 p-4 rounded-xl border border-base-300 shadow-xs space-y-3">
-        <h2 className="font-semibold text-sm">MQTT Broker</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <label className="form-control">
-            <span className="label-text text-xs font-medium mb-1">MQTT Server URL</span>
-            <input
-              className="input input-sm input-bordered font-mono"
-              value={mqttServer}
-              onChange={(e) => setMqttServer(e.target.value)}
-              required
-            />
-          </label>
-          <label className="form-control">
-            <span className="label-text text-xs font-medium mb-1">Base Topic</span>
-            <input
-              className="input input-sm input-bordered font-mono"
-              value={baseTopic}
-              onChange={(e) => setBaseTopic(e.target.value)}
-              required
-            />
-          </label>
-          <label className="form-control">
-            <span className="label-text text-xs font-medium mb-1">MQTT Username</span>
-            <input
-              className="input input-sm input-bordered font-mono"
-              value={mqttUser}
-              onChange={(e) => setMqttUser(e.target.value)}
-            />
-          </label>
-          <label className="form-control">
-            <span className="label-text text-xs font-medium mb-1">MQTT Password</span>
-            <input
+      <Card>
+        <CardHeader>
+          <CardTitle>MQTT Broker</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <FormField label="MQTT Server URL">
+            <Input className="font-mono" value={mqttServer} onChange={(e) => setMqttServer(e.target.value)} required />
+          </FormField>
+          <FormField label="Base Topic">
+            <Input className="font-mono" value={baseTopic} onChange={(e) => setBaseTopic(e.target.value)} required />
+          </FormField>
+          <FormField label="MQTT Username">
+            <Input className="font-mono" value={mqttUser} onChange={(e) => setMqttUser(e.target.value)} />
+          </FormField>
+          <FormField label="MQTT Password">
+            <Input
               type="password"
-              className="input input-sm input-bordered font-mono"
+              className="font-mono"
               value={mqttPassword}
               onChange={(e) => setMqttPassword(e.target.value)}
             />
-          </label>
-        </div>
-      </div>
+          </FormField>
+        </CardContent>
+      </Card>
 
-      <div className="bg-base-100 p-4 rounded-xl border border-base-300 shadow-xs space-y-3">
-        <h2 className="font-semibold text-sm">Availability & Advanced</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
-          <label className="label cursor-pointer justify-start gap-2">
-            <input
-              type="checkbox"
-              className="checkbox checkbox-sm checkbox-primary"
-              checked={availEnabled}
-              onChange={(e) => setAvailEnabled(e.target.checked)}
+      <Card>
+        <CardHeader>
+          <CardTitle>Availability & Runtime</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center justify-between rounded-md border border-border bg-muted/35 px-3 py-2">
+            <span className="text-xs font-medium text-foreground">Publish Per-Slave Availability</span>
+            <Switch checked={availEnabled} onCheckedChange={setAvailEnabled} />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <FormField label="Offline After Failures">
+              <Input
+                type="number"
+                min={1}
+                max={20}
+                className="tabular-nums font-mono"
+                value={offlineAfter}
+                onChange={(e) => setOfflineAfter(Number(e.target.value) || 2)}
+              />
+            </FormField>
+            <FormField label="Log Level">
+              <Select
+                value={logLevel}
+                onChange={(e) => setLogLevel(e.target.value as 'debug' | 'info' | 'warn' | 'error')}
+              >
+                <option value="debug">debug</option>
+                <option value="info">info</option>
+                <option value="warn">warn</option>
+                <option value="error">error</option>
+              </Select>
+            </FormField>
+            <FormField label="Last Seen Format">
+              <Select
+                value={lastSeen}
+                onChange={(e) => setLastSeen(e.target.value as 'disable' | 'ISO_8601' | 'epoch')}
+              >
+                <option value="ISO_8601">ISO_8601</option>
+                <option value="epoch">epoch</option>
+                <option value="disable">disable</option>
+              </Select>
+            </FormField>
+          </div>
+
+          <FormField
+            label="Client Browser Token"
+            hint="Optional bearer token when frontend.auth_token is enabled in YAML."
+          >
+            <Input
+              type="password"
+              className="font-mono"
+              placeholder="Optional WebSocket / API bearer token"
+              value={authToken}
+              onChange={(e) => setAuthToken(e.target.value)}
             />
-            <span className="label-text text-xs font-medium">Publish Per-Slave Availability</span>
-          </label>
-          <label className="form-control">
-            <span className="label-text text-xs font-medium mb-1">Offline After Failures</span>
-            <input
-              type="number"
-              min={1}
-              max={20}
-              className="input input-sm input-bordered tabular-nums"
-              value={offlineAfter}
-              onChange={(e) => setOfflineAfter(Number(e.target.value) || 2)}
-            />
-          </label>
-          <label className="form-control">
-            <span className="label-text text-xs font-medium mb-1">Log Level</span>
-            <select
-              className="select select-sm select-bordered"
-              value={logLevel}
-              onChange={(e) =>
-                setLogLevel(e.target.value as 'debug' | 'info' | 'warn' | 'error')
-              }
-            >
-              <option value="debug">debug</option>
-              <option value="info">info</option>
-              <option value="warn">warn</option>
-              <option value="error">error</option>
-            </select>
-          </label>
-          <label className="form-control">
-            <span className="label-text text-xs font-medium mb-1">Last Seen Format</span>
-            <select
-              className="select select-sm select-bordered"
-              value={lastSeen}
-              onChange={(e) =>
-                setLastSeen(e.target.value as 'disable' | 'ISO_8601' | 'epoch')
-              }
-            >
-              <option value="ISO_8601">ISO_8601</option>
-              <option value="epoch">epoch</option>
-              <option value="disable">disable</option>
-            </select>
-          </label>
-        </div>
-
-        <label className="form-control pt-2">
-          <span className="label-text text-xs font-medium mb-1">
-            Client Browser Token (if frontend.auth_token is configured in YAML)
-          </span>
-          <input
-            type="password"
-            className="input input-sm input-bordered font-mono"
-            placeholder="Optional WebSocket / API bearer token"
-            value={authToken}
-            onChange={(e) => setAuthToken(e.target.value)}
-          />
-        </label>
-      </div>
-
-      <div className="flex justify-end">
-        <button type="submit" className="btn btn-primary btn-sm gap-1.5" disabled={saving}>
-          <Save className="w-3.5 h-3.5" />
-          {saving ? 'Saving...' : 'Save Settings'}
-        </button>
-      </div>
+          </FormField>
+        </CardContent>
+      </Card>
     </form>
   );
 }
