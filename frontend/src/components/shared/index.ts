@@ -1,5 +1,4 @@
 export { AppShell } from './AppShell';
-export type { NavTab } from './AppShell';
 export { EmptyState } from './EmptyState';
 export { FormField } from './FormField';
 export { InlineValueControl } from './InlineValueControl';
@@ -8,5 +7,7 @@ export { NoticeBanner } from './NoticeBanner';
 export { PageHeader } from './PageHeader';
 export { PointEditorModal } from './PointEditorModal';
 export { RpcEditorModal } from './RpcEditorModal';
+export { NAV_ITEMS, SidebarNav } from './SidebarNav';
+export type { NavItem, NavTab } from './SidebarNav';
 export { SlaveConnectionFields } from './SlaveConnectionFields';
 export { StatusBadge } from './StatusBadge';

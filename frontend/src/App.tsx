@@ -3,24 +3,35 @@ import { Loader2 } from 'lucide-react';
 import { AppShell, type NavTab } from '@/components/shared';
 import { useBridgeState, useTheme } from '@/hooks';
 import {
-  DashboardPage,
   DeviceDetailPage,
   DevicesPage,
+  HomePage,
   LogsPage,
   SettingsPage,
 } from '@/pages';
 
+const TAB_LABEL: Record<NavTab, string> = {
+  home: 'Home',
+  devices: 'Devices',
+  settings: 'Settings',
+  logs: 'Logs',
+};
+
 export function App() {
-  const [tab, setTab] = useState<NavTab>('devices');
+  const [tab, setTab] = useState<NavTab>('home');
   const [selectedIeee, setSelectedIeee] = useState<string | null>(null);
   const { theme, toggleTheme } = useTheme();
   const { snapshot, wsConnected, logs, reloadSnapshot, restartBridge, clearLogs } = useBridgeState();
 
   const selectedDevice = snapshot?.devices.find((d) => d.ieee_address === selectedIeee);
+  const breadcrumb = selectedDevice ? `Devices / ${selectedDevice.friendly_name}` : TAB_LABEL[tab];
 
   return (
     <AppShell
       activeTab={tab}
+      breadcrumb={breadcrumb}
+      deviceCount={snapshot?.devices.length ?? 0}
+      logCount={logs.length}
       onSelectTab={(next) => {
         setSelectedIeee(null);
         setTab(next);
@@ -46,21 +57,29 @@ export function App() {
           onBack={() => setSelectedIeee(null)}
           onUpdated={() => void reloadSnapshot()}
         />
+      ) : tab === 'home' ? (
+        <HomePage
+          devices={snapshot.devices}
+          states={snapshot.states}
+          config={snapshot.config}
+          mqttConnected={snapshot.mqtt_connected}
+          wsConnected={wsConnected}
+          logs={logs}
+          onNavigate={(next) => {
+            setSelectedIeee(null);
+            setTab(next);
+          }}
+          onSelectDevice={(id) => {
+            setTab('devices');
+            setSelectedIeee(id);
+          }}
+        />
       ) : tab === 'devices' ? (
         <DevicesPage
           devices={snapshot.devices}
           states={snapshot.states}
           onSelectDevice={(id) => setSelectedIeee(id)}
           onDevicesChanged={() => void reloadSnapshot()}
-        />
-      ) : tab === 'dashboard' ? (
-        <DashboardPage
-          devices={snapshot.devices}
-          states={snapshot.states}
-          onSelectDevice={(id) => {
-            setTab('devices');
-            setSelectedIeee(id);
-          }}
         />
       ) : tab === 'logs' ? (
         <LogsPage logs={logs} onClearLogs={clearLogs} />
