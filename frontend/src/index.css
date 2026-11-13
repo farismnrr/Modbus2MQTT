@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: corporate --default, business --prefersdark;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

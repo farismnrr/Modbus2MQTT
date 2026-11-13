@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/types.ts","./src/api/client.ts","./src/components/Navbar.tsx","./src/components/PointEditorModal.tsx","./src/components/RpcEditorModal.tsx","./src/pages/DashboardPage.tsx","./src/pages/DeviceDetailPage.tsx","./src/pages/DevicesPage.tsx","./src/pages/LogsPage.tsx","./src/pages/SettingsPage.tsx"],"version":"5.9.3"}

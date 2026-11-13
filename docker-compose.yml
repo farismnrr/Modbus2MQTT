@@ -1,0 +1,12 @@
+services:
+  modbus2mqtt:
+    build: .
+    container_name: modbus2mqtt
+    restart: unless-stopped
+    ports:
+      - "8099:8099"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - TZ=Asia/Jakarta
+      - MODBUS2MQTT_DATA=/app/data

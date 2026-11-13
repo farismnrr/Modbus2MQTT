@@ -1,0 +1,19 @@
+mqtt:
+  base_topic: modbus2mqtt
+  server: mqtt://localhost:1883
+  keepalive: 60
+
+frontend:
+  enabled: true
+  port: 8099
+  host: 0.0.0.0
+
+availability:
+  enabled: true
+  offline_after_failures: 2
+
+advanced:
+  log_level: info
+  last_seen: ISO_8601
+
+devices: {}
