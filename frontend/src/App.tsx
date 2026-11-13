@@ -1,5 +1,9 @@
-import { useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { Loader2 } from 'lucide-react';
+
+const Agentation = lazy(() =>
+  import('agentation').then((mod) => ({ default: mod.Agentation })),
+);
 import { AppShell, type NavTab } from '@/components/shared';
 import { useBridgeState, useTheme } from '@/hooks';
 import {
@@ -86,6 +90,9 @@ export function App() {
       ) : (
         <SettingsPage config={snapshot.config} onSaved={() => void reloadSnapshot()} />
       )}
+      <Suspense fallback={null}>
+        <Agentation appName="Modbus2MQTT" />
+      </Suspense>
     </AppShell>
   );
 }

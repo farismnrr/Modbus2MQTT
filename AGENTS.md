@@ -12,8 +12,8 @@
 
 ## Rule #2 — Design System Parity (Sensio Tokens + Linear Minimalist Craft)
 
-1. Preserve Sensio's brand & surface tokens in `frontend/src/index.css`:
-   - Font stack: `Plus Jakarta Sans` (`--font-sans`) + `JetBrains Mono` (`--font-mono`) with `tabular-nums` for numeric telemetry, addresses, function codes, and timestamps.
+1. Preserve Sensio's brand, typography, & surface tokens in `frontend/src/index.css`:
+   - Font stack: Self-hosted `@fontsource-variable/plus-jakarta-sans` (`Plus Jakarta Sans Variable`) with `font-variant-numeric: tabular-nums` matching Sensio (`_reset.scss`), plus Sensio's Utopia fluid type scale (`--text-2xs` .. `--text-display`, `--leading-*`, `--tracking-tight`).
    - Brand accent: Sensio Teal (`#0d9488` light / `#14b8a6` dark), restrained strictly to primary actions, active nav/tabs, and focus rings.
    - Surface hierarchy: Near-neutral canvas (`#f8f9fa` / `#09090b`) and card surfaces (`#ffffff` / `#111113`) separated by crisp `1px` hairline borders (`--border`) rather than heavy shadows.
    - Compact Linear density: default control height `h-8` (`32px`), compact `h-7` (`28px`), crisp negative tracking on headings (`-0.02em`), high-signal muted secondary copy (`text-muted-foreground`).

@@ -19,11 +19,13 @@ export function PageHeader({ title, description, leading, actions, className }: 
     >
       <div className="flex items-center gap-3 min-w-0">
         {leading}
-        <div className="min-w-0 space-y-0.5">
-          <h1 className="text-base font-semibold text-foreground tracking-tight flex items-center gap-2 flex-wrap">
+        <div className="min-w-0 space-y-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground leading-tight tracking-tight flex items-center gap-2 flex-wrap">
             {title}
           </h1>
-          {description ? <p className="text-xs text-muted-foreground truncate">{description}</p> : null}
+          {description ? (
+            <p className="text-sm text-muted-foreground leading-normal">{description}</p>
+          ) : null}
         </div>
       </div>
       {actions ? <div className="flex items-center gap-2 shrink-0">{actions}</div> : null}
